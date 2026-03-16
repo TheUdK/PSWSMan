@@ -1,0 +1,27 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tgymnich/fork-sync@v2.0
+        with:
+          owner: jborean93
+          repo: PSWSMan
+          base: main
+          head: main
+          merge_method: rebase
+          pr_title: "Sync upstream/main"
+          pr_message: |
+            Automated sync from jborean93/PSWSMan.
+
+            If this PR cannot be merged cleanly, it will remain open for manual conflict resolution.
