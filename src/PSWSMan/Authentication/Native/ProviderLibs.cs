@@ -191,7 +191,25 @@ internal static class ProviderLibs
         IntPtr handle;
         try
         {
-            handle = assembly is null ? NativeLibrary.Load(lib) : NativeLibrary.Load(lib, assembly, null);
+            handle = LoadLibrary(lib, assembly);
+        }
+        catch (DllNotFoundException) when (Environment.Version.Major >= 11 && !OperatingSystem.IsWindows())
+        {
+            // .NET 11 calls dlopen and dlerror through two separate P/Invokes
+            // (dotnet/runtime#121058). The first failed load in a process binds
+            // the dlerror P/Invoke in between, which clears the error, so the
+            // exception has no reason. A failed dlopen has no side effects and
+            // the binding is now done, so a second attempt reports the reason.
+            try
+            {
+                handle = LoadLibrary(lib, assembly);
+            }
+            catch (Exception e) when (e is DllNotFoundException or BadImageFormatException)
+            {
+                provider = null;
+                error = new DllNotFoundException($"Failed to load {kind} library '{lib}': {LoaderReason(e)}", e);
+                return false;
+            }
         }
         catch (Exception e) when (e is DllNotFoundException or BadImageFormatException)
         {
@@ -223,6 +241,9 @@ internal static class ProviderLibs
     /// <c>cannot open shared object file: No such file or directory</c>. On Windows the message is a single line
     /// ending in the Win32 error. The last non-empty line is the useful part in every case.
     /// </remarks>
+    private static IntPtr LoadLibrary(string lib, Assembly? assembly)
+        => assembly is null ? NativeLibrary.Load(lib) : NativeLibrary.Load(lib, assembly, null);
+
     private static string LoaderReason(Exception e)
     {
         string[] lines = e.Message.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);

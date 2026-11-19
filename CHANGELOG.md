@@ -4,6 +4,7 @@
 
 + Support PowerShell 7.7 (.NET 11), `Enable-PSWSMan` previously failed with `CoreCLR version 11.0.0 is not supported`
   + Bumped `MonoMod.RuntimeDetour` to `25.4.0-prerelease.2`, the first release with .NET 11 runtime support, move to the stable `25.4.x` release once it is published
+  + Work around a .NET 11 bug that dropped the reason from the first failed native library load in a process, a GSSAPI or Devolutions SSPI load failure reports why the library could not be loaded again
 + `New-WinRMSession` and `Invoke-WinRMCommand` now forward events from the remote session to the local event queue like `New-PSSession` and `Invoke-Command`, events registered remotely with `Register-EngineEvent -Forward` can be received with `Wait-Event`, `Get-Event` or a local `Register-EngineEvent`
 
 ## v3.0.0 - 2026-10-13
