@@ -328,8 +328,8 @@ an elevated shell.
 ## Continuous integration
 
 `.github/workflows/ci.yml` builds once on Ubuntu, uploads the nupkg, then runs
-`build.ps1 -Task Test -ModuleNupkg` on a matrix of PowerShell 7.4, 7.5 and 7.6
-on Windows, Linux, and macOS on both Apple silicon and Intel. Each test job
+`build.ps1 -Task Test -ModuleNupkg` on a matrix of PowerShell 7.4, 7.5, 7.6
+and 7.7 on Windows, Linux, and macOS on both Apple silicon and Intel. Each test job
 sets up Python for the authentication tests, and the Linux jobs install
 gss-ntlmssp so MIT krb5 can do NTLM. Coverage goes to Codecov. Pushes to `main` and
 tagged releases (`v*`) build in `Release` configuration; pull requests build
