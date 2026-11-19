@@ -131,6 +131,15 @@ jobs:
         - name: PS_7.6_x64_macOS
           psversion: '7.6.0'
           os: macos-26-intel
+        - name: PS_7.7_x64_Windows
+          psversion: '7.7.0'
+          os: windows-latest
+        - name: PS_7.7_x64_Linux
+          psversion: '7.7.0'
+          os: ubuntu-latest
+        - name: PS_7.7_arm64_macOS
+          psversion: '7.7.0'
+          os: macos-latest
 
     steps:
     - name: Check out repository
