@@ -95,9 +95,9 @@ Describe "Get and Set-PSWSManAuth" -ForEach @(@{ GssapiLib = $gssapiLib; SystemA
         $out | Should-BeNull
         $err.Count | Should-Be 1
         [string]$err[0] | Should-BeLikeString "*Failed to load GSSAPI library '$missing': *"
-        # .NET 11 on macOS no longer appends the dyld reason to the loader
-        # message, only check for it when the runtime supplied one.
-        if (-not ($IsMacOS -and [Environment]::Version.Major -ge 11)) {
+        # .NET 11 no longer appends the dlerror reason to the loader message
+        # on Linux and macOS, only check for it on older runtimes.
+        if ([Environment]::Version.Major -lt 11) {
             [string]$err[0] | Should-BeLikeString "*no such file*"
         }
         $err[0].FullyQualifiedErrorId | Should-BeLikeString 'GssapiLibNotAvailable,*'
